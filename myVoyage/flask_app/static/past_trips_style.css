@@ -1,0 +1,14 @@
+.trip{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 10em;
+    justify-content: flex-start;
+}
+
+.past_trip_info{
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: flex-start;
+    align-content: space-between;
+    width: 100%;
+}

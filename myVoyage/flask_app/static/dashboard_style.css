@@ -1,0 +1,146 @@
+/* *************************************************************** */
+/* Typography Styling */
+/* *************************************************************** */
+.destination_names{
+    font-family: 'Quattrocento', serif;
+    font-size: 16px;
+}
+.activity_description{
+    font-style: italic;
+}
+
+/* *************************************************************** */
+/* Layout Styling */
+/* *************************************************************** */
+#dashboard{
+    display: grid;
+    width: 100%;
+    gap: 1.5em;
+    grid-template-columns: 2fr 1fr;
+
+}
+#trip_info{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap:2em;
+}
+#green_line{
+    width: 6em;
+    background-color: #AEBF2A;
+    height: .25em;
+    margin: 1em 0em;
+}
+#trip_name{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    justify-items: center;
+}
+
+#past_trip_heading{
+    display: flex;
+}
+.past_trip_content{
+    margin-right: 1em;
+}
+.dates{
+    background-color: #AEBF2A;
+    color: white;
+    font-size: 16px;
+    padding: 5px 10px;
+    line-height: 1em;
+}
+#main_trip{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3em;
+    justify-content: center;
+    align-items: center;
+}
+#all_past_trips{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3em;
+    justify-content: space-between;
+    /* align-content: space-around; */
+}
+.past{
+    margin-bottom:1em;
+    margin-right: 1em;
+}
+#past_trips{
+    grid-column: 1/-1;
+}
+/* *************************************************************** */
+/* Timeline Styling */
+/* *************************************************************** */
+#trip_timeline{
+    background-color: #F6F6F6;
+    padding: 2em;
+}
+.timeline_dot{
+    height: 7px;
+    width: 7px;
+    background-color:#303030 ;
+    border: solid 1px #303030;
+    border-radius: 50%;
+    display: inline-block;
+}
+.timeline_item{
+    display: grid;
+    grid-template-columns: 2fr 1fr 6fr;
+    margin-top: 1em;
+    align-items: center;
+    justify-content: center;
+    
+}
+#timeline{
+    position: relative;
+    width: 500;
+    margin-bottom: 2em;
+}
+#timeline::after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    background-color: #303030;
+    top: 0;
+    bottom: 0;
+    left: 23.8%;
+}
+.timeline_date{
+    margin-right: 1em;
+}
+.single_trip{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+}
+#profile_pic{
+    border-radius: 50%;
+    height: 6em;
+}
+#profile_info{
+    justify-content: space-around;
+}
+.profile{
+    margin-bottom: 1em;
+}
+/* *************************************************************** */
+/* Buttons Styling */
+/* *************************************************************** */
+.green_button, .blue_button{
+    padding: .5em 2em;
+    font-weight: 600;
+}
+.green_button{
+    background-color: #D1EBE4;
+    color:#303030;
+
+}
+.blue_button{
+    background-color: #20293A;
+    color:white;
+}

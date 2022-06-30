@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='account_style.css') }}">    
+    <title>Account</title>
+</head>
+<body>
+    <div class="nav_menu">
+        <h2 id="myVoyage">my<span style="color:#AEBF2A;">Voyage</span></h2>
+        <div class="nav_links">
+            <a class="navlink" href="/dashboard">Dashboard</a>
+            <a class="navlink" href="/plan-a-trip">Plan a Trip</a>
+            <a class="navlink" href="/trip-inspiration">Trip Inspiration</a>
+            <a class="navlink" href="/log-out">Logout</a>
+        </div>
+    </div>
+    <div class="container" id="account_container">
+        <div id="profile">
+            <h1 class="account_info">Your Account</h1>
+            <div id="profile_view">
+                <div id="profile_info">
+                    <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" id="profile_pic" class="account_info">
+                    <h2 class="account_info">{{user.first_name}} {{user.last_name}}</h2>
+                    <h3 class="account_info">{{user.email}}</h3>
+                    <p class="account_info">{{user.bio}}</p>
+                </div>
+                <div class="form_container">
+                    <h2>Edit Acccount</h2>
+                    <form class="form" action='/edit_user/{{session.user_id}}' method='post'>
+                        {% with messages = get_flashed_messages(category_filter=["update error"]) %}
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <p class="validation">{{message}}</p>
+                                {% endfor %}
+                            {% endif %}
+                        {% endwith %}
+
+                            <input type="text" name="first_name" placeholder="First Name" value="{{user.first_name}}">
+
+                            <input type="text" name="last_name" placeholder="Last Name" value="{{user.last_name}}">
+
+                            <input type="text" name="email" placeholder="Email" value="{{user.email}}" autocomplete="off">
+
+                            <input type="file" name="profile_picture" accept="image/*" placeholder="Upload Profile Picture">
+
+                            <textarea class="full_width" name="bio" id="textarea" cols="30" rows="4" placeholder="About You">{{user.bio}}</textarea>
+                        <input class="full_width" type="submit" name="register" value="Update" id="register">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <a href="/delete/{{session.user_id}}" id="delete">Delete Account</a>
+    </div>
+
+</body>
+</html>

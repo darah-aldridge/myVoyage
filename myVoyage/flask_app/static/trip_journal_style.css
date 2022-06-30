@@ -1,0 +1,36 @@
+#trip_timeline{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    gap: 2em 
+}
+
+.timeline_item{
+    grid-template-columns: 10fr 1fr 20fr 10fr ;
+    gap: 2em;
+}
+.timeline_date{
+    justify-self: flex-end;
+}
+.timeline_info{
+    justify-self: flex-start;
+}
+
+#timeline::after {
+    left: 24%;
+}
+.activity_pic{
+    width: 20em;
+
+}
+
+#header{
+    text-align: center;
+    margin-top: 1em;
+}
+#journal_container{
+    padding: 0em 8em 3em 8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;}

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="nav_menu">
+        <h2 id="myVoyage">my<span style="color:#AEBF2A;">Voyage</span></h2>
+        <div class="nav_links">
+            <a class="navlink" href="/dashboard">Dashboard</a>
+            <a class="navlink" href="/plan-a-trip">Plan a Trip</a>
+            <a class="navlink" href="/trip-inspiration">Trip Inspiration</a>
+            <a class="navlink" href="/log-out">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div id="dashboard">
+            <div class="box">
+                <h2>Upcoming Trip</h2>
+                <div id ="green_line"></div>
+                <div id="main_trip">
+                    <div id="trip_info">
+                        <div id="trip_name">
+                            <h3>Trip Name</h3>
+                            <h3 class="dates">MM/DD/YY - MM/DD/YY</h3>
+                        </div>
+                        <p class="destination_names">DESTINATION | DESTINATION | DESTINATION</p>
+                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    </div>
+                    <div id="trip_timeline">
+                        <h2>Itinerary</h2>
+                        <div id="timeline">
+                            <div class="timeline_item">
+                                <div class="timeline_date">
+                                    <p>MM/DD</p>
+                                    <p>00:00</p>
+                                </div>
+                                <div class="timeline_dot"></div>
+                                <div class="timeline_info">
+                                    <h4>Check In - Accomodation</h4>
+                                    <p>Address</p>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="green_button" href="#">View Full Trip</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="box" id="profile_info">
+                <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
+                <h2 class="profile">{{user.first_name}} {{user.last_name}}</h2>
+                <p class="profile">{{user.bio}}</p>
+                <a class="green_button" href="/account">Edit Account</a>
+            </div>
+            <div class="box" id="past_trips">
+                <div id="past_trip_heading">
+                    <h2  class="past_trip_content">Past Trips</h2>
+                    <a class="green_button past_trip_content" href="#">View All Past Trips</a>
+                </div>
+                <div id ="green_line"></div>
+                <div id="all_past_trips">
+                    <div class="single_trip">
+                        <div id="trip_name">
+                            <h3 class="past">Trip Name</h3>
+                            <h3 class="stars past">* * * * *</h3>
+                        </div>
+                        <h3 class="past">MM/DD/YY - MM/DD/YY</h3>
+                        <p class="destination_names past">DESTINATION | DESTINATION | DESTINATION</p>
+                        <p class="past">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        <a href="#" class="blue_button">Trip Journal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

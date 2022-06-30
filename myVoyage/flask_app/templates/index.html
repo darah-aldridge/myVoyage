@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script defer src="https://cdn.crop.guide/loader/l.js?c=123ABC"></script>
+    <title>myVoyage</title>
+</head>
+<body>
+    <div class="nav_menu">
+        <h2 id="myVoyage">my<span style="color:#AEBF2A;">Voyage</span></h2>
+        <div class="nav_links">
+            <a class="navlink" href="/trip-inspiration">Trip Inspiration</a>
+        </div>
+    </div>
+    <div class="container">
+        <div id="loginAndReg">
+            <h1 id="header">Create an Account or Login</h1>
+            <div class="login_container">
+                <div class="form_container">
+                    <h2>Create an Acccount</h2>
+                    {% with messages = get_flashed_messages(category_filter=["register error"]) %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="validation">{{message}}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form class="form" action='/register' method='post'>
+
+                            <input type="text" name="first_name" placeholder="First Name">
+
+                            <input type="text" name="last_name" placeholder="Last Name">
+
+                            <input type="text" name="email" placeholder="Email">
+
+                            <input type="file" name="profile_picture" accept="image/*" placeholder="Upload Profile Picture">
+
+                            <textarea class="full_width" name="bio" class="textarea" cols="30" rows="4" placeholder="About You"></textarea>
+
+                            <input type="password" name="password"  placeholder="Password">
+
+                            <input type="password" name="confirm_password"  placeholder="Confirm Password">
+
+                        <input class="full_width" type="submit" name="register" value="Create Account" id="register">
+                    </form>
+                </div>
+                <div id="seperator"></div> 
+                <div class="form_container">
+                    <h2>Login</h2>
+                    {% with messages = get_flashed_messages(category_filter=["login error"]) %}   
+                        {% if messages %}                  
+                            {% for login_messages in messages %}          
+                                <p class="validation">{{login_messages}}</p>                 
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                    <form class="form" action='/login' method='post'>
+                            <input class="full_width" type="text" name="email" placeholder="Email">
+                            <input class="full_width" type="password" name="password" placeholder="Password">
+                        <input class="full_width" type="submit" name="login" value="Login" id="login">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

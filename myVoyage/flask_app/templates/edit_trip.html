@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='past_trips_style.css') }}">
+
+    <title>Edit Your Trip</title>
+</head>
+<body>
+    <div class="nav_menu">
+        <h2 id="myVoyage">my<span style="color:#AEBF2A;">Voyage</span></h2>
+        <div class="nav_links">
+            <a class="navlink" href="/dashboard">Dashboard</a>
+            <a class="navlink" href="/plan-a-trip">Plan a Trip</a>
+            <a class="navlink" href="/trip-inspiration">Trip Inspiration</a>
+            <a class="navlink" href="/log-out">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="box" id="single_form_container">
+            <h1 id="header">Edit Your Trip</h1>
+            <form class="form" action='/edit-trip/{{trip.id}}' method='post'>
+                {% with messages = get_flashed_messages(category_filter=["trip error"]) %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="validation">{{message}}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                    <div class="field_name full_width">
+                        <label for="trip_name">Trip Name</label>
+                        <input type="text" name="trip_name" class="full_width" placeholder="Name your trip"  value="{{trip.trip_name}}">  
+                    </div>
+                    <div class="field_name">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" name="start_date" placeholder="Start Date" value="{{trip.start_date}}">
+                    </div>
+                    <div class="field_name">
+                        <label for="end_date">End Date</label>
+                        <input type="date" name="end_date" placeholder="End Date" value="{{trip.end_date}}">
+                    </div>
+                    <div class="field_name full_width">
+                        <label for="destinations">Destinations (separate each destination by a comma) </label>
+                        <input type="text" name="destinations" class="full_width" placeholder="Desination(s) separated by pipes ( | )" value="{{trip.destinations}}">        
+                    </div>
+                    <div class="field_name full_width">
+                        <label for="description">Short Description of Your Upcoming Trip</label>
+                        <textarea class="full_width" name="description" class="textarea" cols="30" rows="4" placeholder="Short description of your trip">{{trip.description}}</textarea>
+                    </div>
+                <input class="full_width" type="submit" name="edit_trip" value="Edit Trip" id="register">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

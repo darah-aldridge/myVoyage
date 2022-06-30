@@ -1,0 +1,22 @@
+#trip_timeline{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    gap: 2em 
+}
+
+.timeline_item{
+    grid-template-columns: 10fr 1fr 30fr;
+    gap: 2em;
+}
+.timeline_date{
+    justify-self: flex-end;
+}
+.timeline_info{
+    justify-self: flex-start;
+}
+
+#timeline::after {
+    left: 26.05%;
+}
