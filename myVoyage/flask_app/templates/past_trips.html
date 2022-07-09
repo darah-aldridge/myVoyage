@@ -23,39 +23,48 @@
     <div class="container">
         <div id="dashboard">
             <div class="box" id="past_trips">
-                <div class="trip">
-                    <div class="past_trip_info">
-                        <div id="trip_name">
-                            <h2 class="past">Trip Name</h3>
-                            <h3 class="stars past">* * * * *</h3>
+                {% if not user.user_trips %}
+                <h4">No trips planned yet!</h4>
+                {%else%}
+                    {% for one_trip in user.user_trips %}
+                    <div class="trip">
+                        <div class="past_trip_info">
+                            <div id="trip_name">
+                                <h2 class="past">{{one_trip.trip_name}}</h3>
+                                <h3 class="stars past">* * * * *</h3>
+                            </div>
+                            <h3 class="past">{{one_trip.start_date_mmddyyyy}} - {{one_trip.end_date_mmddyyyy}}</h3>
+                            <p class="destination_names past">{{one_trip.destinations}}</p>
+                            <p class="past">{{one_trip.description}}</p>
+                            <a href="/view/{{one_trip.id}}" class="blue_button">Trip Journal</a>
                         </div>
-                        <h3 class="past">MM/DD/YY - MM/DD/YY</h3>
-                        <p class="destination_names past">DESTINATION | DESTINATION | DESTINATION</p>
-                        <p class="past">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                        <a href="#" class="blue_button">Trip Journal</a>
-                    </div>
-                    <div id="trip_timeline">
-                        <h2>Itinerary</h2>
-                        <div id="timeline">
-                            <div class="timeline_item">
-                                <div class="timeline_date">
-                                    <p>MM/DD</p>
-                                    <p>00:00</p>
+                        <div id="trip_timeline">
+                            <h2>Itinerary</h2>
+                            {% if not user.user_trips %}
+                            <h4">No activities planned yet!</h4>
+                            {%else%}
+                            <div id="timeline">
+                                {% for one_activity in user.trip_activities[:3] %}
+                                <div class="timeline_item">
+                                    <div class="timeline_date">
+                                        <p>{{one_activity.start_date_mmdd}}</p>
+                                        <p class="time">{{one_activity.activity_start_time}}</p>
+                                    </div>
+                                    <div class="timeline_dot"></div>
+                                    <div class="timeline_info">
+                                        <h4 class="activity_name">{{one_activity.name}} | <a class="edit" href="/edit-activity/{{one_activity.id}}">Edit</a></h4>
+                                        <p>{{one_activity.address_location}}</p>
+                                    </div>
                                 </div>
-                                <div class="timeline_dot"></div>
-                                <div class="timeline_info">
-                                    <h4>Check In - Accomodation</h4>
-                                    <p>Address</p>
-                                </div>
+                                {%endfor%}
+                                {%endif%}
                             </div>
                         </div>
-                        <a class="green_button" href="#">View Full Trip</a>
                     </div>
+                    {%endfor%}
                 </div>
-
             </div>
-
         </div>
-    </div>
+        {%endif%}
 </body>
 </html>

@@ -25,37 +25,66 @@
             <div class="box">
                 <div id="trip_info">
                     <div id="trip_name">
-                        <h2>Trip Name</h2>
-                        <h3 class="dates">MM/DD/YY - MM/DD/YY</h3>
+                        <h2>{{trip.trip_name}}</h2>
+                        <h3 class="dates">{{trip.start_date_mmddyyyy}} - {{trip.end_date_mmddyyyy}}</h3>
                     </div>
-                    <p class="destination_names">DESTINATION | DESTINATION | DESTINATION</p>
-                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    <p class="destination_names">{{trip.destinations}}</p>
+                    <p>{{trip.description}}</p>
                 </div>
+                
+            </div>
+            <div class="box" id="profile_info">
+                <h1>{{trip.user_id}}</h1>
+                {% if session.user_id == trip.user_id %}
+                    <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
+                    <h2 class="profile">First Last</h2>
+                    <p class="profile">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                {% else %}
+                <h2>Journal Your Trip</h2>
+                <form id="journal_form" action='/register' method='post'>
+                    {% with messages = get_flashed_messages(category_filter=["register error"]) %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <p class="validation">{{message}}</p>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                        <select class="full_width" id="activity_type" name="activity">
+                            <option value="" >Choose activity...</option>
+                            {% for activity in trip.activity_list %}
+                            <option value="{{activity.id}}">{{activity.name}}</option>
+                            {% endfor %}
+                        </select>        
+                        <textarea class="full_width" name="short_description" class="textarea" cols="30" rows="4" placeholder="Short Description"></textarea>
+                        <input type="file" name="activity_picture" class="full_width" placeholder="Upload Picture from Activity">        
+                    <input class="full_width" type="submit" name="add_journal" value="Add to Your Journal" id="register">
+                </form>
+                {% endif %}
             </div>
 
-            <div class="box" id="profile_info">
-                <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
-                <h2 class="profile">First Last</h2>
-                <p class="profile">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                <a class="green_button" href="#">Edit Account</a>
-            </div>
         </div>
     </div>
     <div id="trip_timeline">
         <h2>Itinerary</h2>
-        <div id="timeline">
-            <div class="timeline_item">
+        <div id="large_timeline">
+            {% for one_activity in trip.activity_list %}
+            <div class="large_timeline_item">
                 <div class="timeline_date">
-                    <p>MM/DD</p>
-                    <p>00:00</p>
+                    <p>{{one_activity.start_date_mmdd}}</p>
+                    <p class="time">{{one_activity.activity_start_time}}</p>
                 </div>
                 <div class="timeline_dot"></div>
                 <div class="timeline_info">
-                    <h4>Check In - Accomodation</h4>
-                    <p>Address</p>
-                    <p class="profile">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    <h4 class="activity_name">{{one_activity.name}}  
+                    {% if session.user_id != trip.user_id %}
+                    | <a class="edit" href="/edit-activity/{{one_activity.id}}">Edit</a>
+                    {%endif%}
+                    </h4>
+                    <p>{{one_activity.address_location}}</p>
+                    <p>{{one_activity.activity_description}}</p>
                 </div>
             </div>
+            {%endfor%}
         </div>
     </div>
     </div>

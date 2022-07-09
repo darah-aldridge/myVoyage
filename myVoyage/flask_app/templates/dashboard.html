@@ -26,28 +26,34 @@
                 <div id="main_trip">
                     <div id="trip_info">
                         <div id="trip_name">
-                            <h3>Trip Name</h3>
-                            <h3 class="dates">MM/DD/YY - MM/DD/YY</h3>
+                            <h3>{{upcoming.user_future_trips[0].trip_name}}</h3>
+                            <h3 class="dates">{{upcoming.user_future_trips[0].start_date_mmddyyyy}} - {{upcoming.user_future_trips[0].end_date_mmddyyyy}}</h3>
                         </div>
-                        <p class="destination_names">DESTINATION | DESTINATION | DESTINATION</p>
-                        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        <p class="destination_names">{{upcoming.user_future_trips[0].destinations}}</p>
+                        <p>{{upcoming.user_future_trips[0].description}}</p>
                     </div>
                     <div id="trip_timeline">
                         <h2>Itinerary</h2>
+                        {% if not upcoming.user_future_trips %}
+                        <h4">No activities planned yet!</h4>
+                        {%else%}
                         <div id="timeline">
+                        {% for one_activity in upcoming.future_trip_activities[:3] %}
                             <div class="timeline_item">
                                 <div class="timeline_date">
-                                    <p>MM/DD</p>
-                                    <p>00:00</p>
+                                    <p>{{one_activity.start_date_mmdd}}</p>
+                                    <p class="time">{{one_activity.activity_start_time}}</p>
                                 </div>
                                 <div class="timeline_dot"></div>
                                 <div class="timeline_info">
-                                    <h4>Check In - Accomodation</h4>
-                                    <p>Address</p>
+                                    <h4 class="activity_name">{{one_activity.name}} | <a class="edit" href="/edit-activity/{{one_activity.id}}">Edit</a></h4>
+                                    <p>{{one_activity.address_location}}</p>
                                 </div>
                             </div>
+                            {%endfor%}
                         </div>
-                        <a class="green_button" href="#">View Full Trip</a>
+                        <a class="green_button" href="/view/{{upcoming.user_future_trips[0].id}}">View Full Trip</a>
+                    {%endif%}
                     </div>
                 </div>
 
@@ -62,20 +68,27 @@
             <div class="box" id="past_trips">
                 <div id="past_trip_heading">
                     <h2  class="past_trip_content">Past Trips</h2>
-                    <a class="green_button past_trip_content" href="#">View All Past Trips</a>
+                    <a class="green_button past_trip_content" href="/past_trips">View All Past Trips</a>
                 </div>
                 <div id ="green_line"></div>
                 <div id="all_past_trips">
+                    {% if not user.user_past_trips %}
+                    <h4">No trips planned yet!</h4>
+                    {%else%}
+                    {% for one_trip in user.user_past_trips[:3] %}
                     <div class="single_trip">
                         <div id="trip_name">
-                            <h3 class="past">Trip Name</h3>
+                            <h3 class="past">{{one_trip.trip_name}}</h3>
                             <h3 class="stars past">* * * * *</h3>
                         </div>
-                        <h3 class="past">MM/DD/YY - MM/DD/YY</h3>
-                        <p class="destination_names past">DESTINATION | DESTINATION | DESTINATION</p>
-                        <p class="past">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                        <a href="#" class="blue_button">Trip Journal</a>
+                        <h3 class="past">{{one_trip.start_date_mmddyyyy}} - {{one_trip.end_date_mmddyyyy}}</h3>
+                        <p class="destination_names past">{{one_trip.destinations}}</p>
+                        <p class="past">{{one_trip.description}}</p>
+                        <a href="/view/{{one_trip.id}}" class="blue_button">Trip Journal</a>
                     </div>
+                    {%endfor%}
+                    {%endif%}
+
                 </div>
             </div>
         </div>

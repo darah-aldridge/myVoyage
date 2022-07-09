@@ -10,6 +10,20 @@
     align-items: center;
     justify-content: center;
 }
+/* .container::after{
+    opacity: 0.125;
+    content: "";
+    background-image: url("/static/images/5282914.png");
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: -1;   
+    min-height: 1000px;
+
+} */
+
 body{
     background-color: #F6F6F6;
 
@@ -179,3 +193,4 @@ input:-webkit-autofill {
     padding: 5em 20em;
     border: none;
 }
+

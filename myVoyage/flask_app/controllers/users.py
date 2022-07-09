@@ -4,7 +4,7 @@ from flask_app.models.user import User
 from flask_app import app
 from flask_bcrypt import Bcrypt
 from flask import flash
-
+from datetime import datetime
 
 bcrypt = Bcrypt(app)
 
@@ -58,8 +58,9 @@ def clear():
 def dashboard():
     if session.get("user_id") == None:
         return redirect('/')
-    user = User.get_one(session['user_id'])
-    return render_template("dashboard.html" , user = user)
+    user = User.get_one_user_with_past_trips(session['user_id'])
+    upcoming = User.get_one_user_with_future_trips(session['user_id'])
+    return render_template("dashboard.html" , user = user, upcoming=upcoming)
 
 @app.route('/account')
 def account():
@@ -83,3 +84,11 @@ def edit_user(id):
         }
     User.edit(data, id)
     return redirect(f'/account')
+
+
+@app.route('/past_trips')
+def userPastTrips():
+    if session.get("user_id") == None:
+        return redirect('/')
+    user = User.get_one_user_with_past_trips(session['user_id'])
+    return render_template("past_trips.html" , user = user)

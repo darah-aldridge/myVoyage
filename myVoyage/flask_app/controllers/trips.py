@@ -1,6 +1,8 @@
 from flask import render_template, request, redirect, session
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask_app.models.trip import Trip
+from flask_app.models.user import User
+
 from flask_app import app
 
 @app.route('/plan-a-trip')
@@ -13,11 +15,13 @@ def planATrip():
 def submitTrip():
     if not Trip.validate_trip(request.form):
         return redirect(f'/plan-a-trip/{trip_id}')
+    end_date = request.form['end_date'] + ' 11:59:59'
+    print(end_date)
     data = {
         "trip_name": request.form['trip_name'],
         "description": request.form['description'],
         "start_date": request.form['start_date'],
-        "end_date": request.form['end_date'],
+        "end_date": end_date,
         "destinations": request.form['destinations'],
         "user_id": session['user_id'],
     }
@@ -32,7 +36,6 @@ def planTrip(id):
     if session.get("user_id") == None:
         return redirect('/')
     trip = Trip.get_one_trip_with_activities(id)
-    print(trip.activity_list[1].name)
     if trip == None:
         trip = Trip.get_one_trip(id)
     return render_template("trip_planner.html", trip=trip)
@@ -73,9 +76,11 @@ def tripInspiration():
         return redirect('/')
     return render_template("trip_inspiration.html") 
 
-@app.route('/view')
-def viewTrip():
-    if session.get("user_id") == None:
-        return redirect('/')
-    return render_template("view_trip.html") 
+@app.route('/view/<int:id>')
+def viewTrip(id):
+    # if session.get("user_id") == None:
+    #     trip = Trip.get_one_trip_with_user(id)
+    #     return render_template("view_trip.html", trip = trip) 
+    trip = Trip.get_one_trip_with_activities(id)
+    return render_template("view_trip.html", trip = trip) 
 

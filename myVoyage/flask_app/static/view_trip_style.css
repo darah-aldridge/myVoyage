@@ -20,3 +20,12 @@
 #timeline::after {
     left: 26.05%;
 }
+
+
+#journal_form{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .5em;
+    width: 350px;
+
+}

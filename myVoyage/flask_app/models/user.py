@@ -4,7 +4,9 @@ from unittest import result
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash, session
 from flask_app import app
-import pprint
+from flask_app.models.trip import Trip
+from flask_app.models.activity import Activity
+
 
 from flask_bcrypt import Bcrypt
 
@@ -26,6 +28,9 @@ class User:
         self.password = data['password']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
+        self.user_past_trips = []
+        self.user_future_trips = []
+        self.future_trip_activities = []
 
     @staticmethod
     def validate_registration(form_data):
@@ -133,3 +138,61 @@ class User:
         return connectToMySQL(db).query_db(query, data)
 
 
+    @classmethod
+    def get_one_user_with_past_trips(cls, id):
+        query = f"SELECT * FROM users LEFT JOIN trips ON users.id = trips.user_id WHERE users.id = {id} and trips.end_date < now() ORDER BY start_date;"
+        results = connectToMySQL(db).query_db(query)
+        if not results:
+            return None
+        else:
+            past_trips = cls(results[0])
+            for row in results:
+                data = {
+                    "id": row['trips.id'],
+                    "trip_name": row['trip_name'],
+                    "description": row['description'],  
+                    "start_date": row['start_date'],  
+                    "end_date": row['end_date'],  
+                    "destinations": row['destinations'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['user_id'],
+                }
+                past_trips.user_past_trips.append(Trip(data))
+        return past_trips
+
+    @classmethod
+    def get_one_user_with_future_trips(cls, id):
+        query = f"SELECT * FROM users LEFT JOIN trips ON users.id = trips.user_id JOIN activities ON activities.trip_id = trips.id WHERE trips.end_date <= now() and users.id = {id} ORDER BY start_date, activity_start;"
+        results = connectToMySQL(db).query_db(query)
+        if not results:
+            return None
+        else:
+            future_trips = cls(results[0])
+            for row in results:
+                trip = {
+                    "id": row['trips.id'],
+                    "trip_name": row['trip_name'],
+                    "description": row['description'],  
+                    "start_date": row['start_date'],  
+                    "end_date": row['end_date'],  
+                    "destinations": row['destinations'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['user_id'],
+                }
+                activity = {
+                    "id": row['activities.id'],
+                    "name": row['name'],
+                    "type": row['type'],  
+                    "activity_start": row['activity_start'],  
+                    "address_location": row['address_location'],  
+                    "activity_description": row['activity_description'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['trip_id'],
+                }
+                future_trips.user_future_trips.append(Trip(trip))
+                future_trips.future_trip_activities.append(Activity(activity))
+        return future_trips
+        
