@@ -22,21 +22,21 @@
     </div>
     <div class="container">
         <div id="dashboard">
+            {% if not user.user_past_trips %}
+            <h4">No trips planned yet!</h4>
+            {%else%}
+                {% for one_trip in user.user_past_trips %}
             <div class="box" id="past_trips">
-                {% if not user.user_trips %}
-                <h4">No trips planned yet!</h4>
-                {%else%}
-                    {% for one_trip in user.user_trips %}
                     <div class="trip">
                         <div class="past_trip_info">
                             <div id="trip_name">
                                 <h2 class="past">{{one_trip.trip_name}}</h3>
                                 <h3 class="stars past">* * * * *</h3>
                             </div>
-                            <h3 class="past">{{one_trip.start_date_mmddyyyy}} - {{one_trip.end_date_mmddyyyy}}</h3>
+                            <h3 class="past">{{one_trip.start_date.strftime("%m/%d/%Y")}} - {{one_trip.end_date.strftime("%m/%d/%Y")}}</h3>
                             <p class="destination_names past">{{one_trip.destinations}}</p>
                             <p class="past">{{one_trip.description}}</p>
-                            <a href="/view/{{one_trip.id}}" class="blue_button">Trip Journal</a>
+                            <a href="/journal/{{one_trip.id}}" class="blue_button">Trip Journal</a>
                         </div>
                         <div id="trip_timeline">
                             <h2>Itinerary</h2>
@@ -57,12 +57,12 @@
                                     </div>
                                 </div>
                                 {%endfor%}
-                                {%endif%}
                             </div>
+                            {%endif%}
                         </div>
                     </div>
-                    {%endfor%}
                 </div>
+                {%endfor%}
             </div>
         </div>
         {%endif%}

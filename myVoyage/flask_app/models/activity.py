@@ -12,9 +12,7 @@ class Activity:
         self.id = data['id']
         self.name = data['name']
         self.activity_description = data['activity_description'] 
-        self.activity_start_date = data['activity_start'].strftime("%Y-%m-%dT%H:%M")
-        self.start_date_mmdd = data['activity_start'].strftime("%m/%d")
-        self.activity_start_time = data['activity_start'].strftime("%I:%M%p")
+        self.activity_start = data['activity_start']
         self.address_location = data['address_location'] 
     @staticmethod
     def validate_activity(form_data):
@@ -79,7 +77,7 @@ class Activity:
     
     @classmethod
     def updateActivity(cls, data, id):
-        query  = f"UPDATE activities SET name = %(name)s, type = %(type)s, activity_start = %(activity_start)s, address_location =%(address_location)s activity_description =%(activity_description)s  WHERE id = {id};"
+        query  = f"UPDATE activities SET name = %(name)s, type = %(type)s, activity_start = %(activity_start)s, address_location = %(address_location)s, activity_description = %(activity_description)s  WHERE id = {id};"
         return connectToMySQL(db).query_db(query, data)
 
     @classmethod

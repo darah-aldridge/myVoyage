@@ -3,6 +3,9 @@ from flask_app.config.mysqlconnection import connectToMySQL
 from flask import flash, session
 from flask_app import app
 from flask_app.models.activity import Activity
+from flask_app.models.journal import Journal
+import pprint
+
 from datetime import datetime
 
 
@@ -13,14 +16,16 @@ class Trip:
         self.id = data['id']
         self.trip_name = data['trip_name']
         self.description = data['description']  
-        self.start_date = data['start_date'].strftime("%Y-%m-%d")  
-        self.end_date = data['end_date'].strftime("%Y-%m-%d")
+        self.start_date = data['start_date']
+        self.end_date = data['end_date']
         self.destinations = data['destinations'] 
-        self.start_date_mmddyyyy = data['start_date'].strftime("%m/%d/%Y")
-        self.end_date_mmddyyyy = data['end_date'].strftime("%m/%d/%Y")
         self.activity_list = []
         self.all_past_trips = []
         self.user_trip = []
+        self.trip_activity = None
+        self.one_trip_activity_list = []
+        self.journal_activity = []
+        self.journal_entry = []
     @staticmethod
     def validate_trip(form_data):
         is_valid = True
@@ -98,17 +103,14 @@ class Trip:
         query  = f"SELECT * FROM trips WHERE id = {id};"
         result = connectToMySQL(db).query_db(query)
         return cls(result[0])
-
+        
     @classmethod
     def get_one_trip_with_activities(cls, id):
-        query = f"SELECT * FROM trips JOIN activities ON trips.id = activities.trip_id WHERE trips.id = {id} ORDER BY activity_start;"
+        query = f"SELECT * FROM trips LEFT JOIN activities ON trips.id = activities.trip_id WHERE trips.id = {id} ORDER BY activity_start;"
         results = connectToMySQL(db).query_db(query)
-        if not results:
-            return None
-        else:
-            trip = cls(results[0])
-            for row in results:
-                data = {
+        trip = cls(results[0])
+        for row in results:
+            data = {
                     "id": row['activities.id'],
                     "name": row['name'],
                     "type": row['type'],  
@@ -117,10 +119,11 @@ class Trip:
                     "activity_description": row['activity_description'],  
                     "created_at": row['created_at'],
                     "updated_at": row['updated_at'],
-                    "user_id": row['trip_id'],
+                    "trip_id": row['trip_id'],
                 }
-                trip.activity_list.append(Activity(data))
+            trip.one_trip_activity_list.append(Activity(data))
         return trip
+
     @classmethod
     def get_past_trips(cls):
         query  = f"SELECT * FROM trips LEFT JOIN users ON trips.user_id = users.id WHERE trips.end_date < now() ORDER BY activity_start;"
@@ -144,14 +147,38 @@ class Trip:
                 trips.all_past_trips.append(Trip(data))
         return trips
 
+
     @classmethod
-    def get_one_trip_with_activities(cls, id):
-        query = f"SELECT * FROM trips LEFT JOIN activities ON trips.id = activities.trip_id WHERE trips.id = {id} ORDER BY activity_start;"
+    def get_one_activity_with_trip(cls, id):
+        query = f"SELECT * FROM trips LEFT JOIN activities ON trips.id = activities.trip_id WHERE activities.id = {id};"        
         results = connectToMySQL(db).query_db(query)
         if not results:
             return None
         else:
-            one_trip_user = cls(results[0])
+            one_activity = cls(results[0])
+            for row in results:
+                data = {
+                    "id": row['activities.id'],
+                    "name": row['name'],
+                    "type": row['type'],  
+                    "activity_start": row['activity_start'],  
+                    "address_location": row['address_location'],  
+                    "activity_description": row['activity_description'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "trip_id": row['id'],
+                }
+                one_activity.trip_activity = Activity(data)
+        return one_activity
+
+    @classmethod
+    def get_trip_with_entries_activities(cls, id):
+        query = f"SELECT * FROM trips LEFT JOIN activities ON activities.trip_id = trips.id LEFT JOIN journal_entries ON activities.id = journal_entries.activity_id WHERE journal_entries.id = {id};"
+        results = connectToMySQL(db).query_db(query)
+        if not results:
+            return None
+        else:
+            journal = cls(results[0])
             for row in results:
                 activity = {
                     "id": row['activities.id'],
@@ -162,7 +189,17 @@ class Trip:
                     "activity_description": row['activity_description'],  
                     "created_at": row['created_at'],
                     "updated_at": row['updated_at'],
-                    "trip_id": row['trip_id'],
+                    "user_id": row['trip_id'],
                 }
-                one_trip_user.activity_list.append(Activity(activity))
-        return one_trip_user
+                entry = {
+                    "id": row['journal_entries.id'],
+                    "entry": row['entry'],
+                    "picture": row['picture'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "activity_id": row['activity_id'],
+                }
+                journal.journal_activity.append(Activity(activity))
+                journal.journal_entry.append(Journal(entry))
+
+        return journal

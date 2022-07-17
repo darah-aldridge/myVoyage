@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='past_trips_style.css') }}">
 
-    <title>Edit Your Trip</title>
+    <title>Edit {{activity.trip_activity.name}}</title>
 </head>
 <body>
     <div class="nav_menu">
@@ -23,7 +23,7 @@
     <div class="container">
         <div class="box" id="single_form_container">
             <h2>Edit Activity</h2>
-            <form class="form" action='/submit_edit_activity/{{activity.id}}' method='post'>
+            <form class="form" action='/submit_edit_activity/{{activity.trip_activity.id}}' method='post'>
                 {% with messages = get_flashed_messages(category_filter=["activity error"]) %}
                     {% if messages %}
                         {% for message in messages %}
@@ -31,14 +31,14 @@
                         {% endfor %}
                     {% endif %}
                 {% endwith %}
-                <input type="hidden" name="trip_id" value="{{activity.trip_id}}">
+                <input type="hidden" name="trip_id" value="{{activity.id}}">
                 <div class="field_name full_width">
                     <label for="activity_name">Activity Name</label>
-                    <input type="text" name="activity_name" placeholder="Activity Name" value="{{activity.name}}">
+                    <input type="text" name="activity_name" placeholder="Activity Name" value="{{activity.trip_activity.name}}">
                 </div>
                 <div class="field_name full_width select_field">
                     <label for="activity_type">Type of Activity</label>
-                    <select id="activity_type" name="activity_type" value="{{activity.type}}">
+                    <select id="activity_type" name="activity_type" value="{{activity.trip_activity.type}}">
                         <option value="">Choose one...</option>
                         <option value="Accomodation">Accomodation</option>
                         <option value="Activity">Activity</option>
@@ -49,15 +49,15 @@
                 </div>
                 <div class="field_name full_width">
                     <label for="activity_start">Start Date and Time</label>
-                    <input type="datetime-local" name="activity_start" value="{{activity.activity_start_date}}">
+                    <input type="datetime-local" name="activity_start" value="{{activity.trip_activity.activity_start_date}}">
                 </div>
                 <div class="field_name full_width ">
                     <label for="address">Location or Address of Activity</label>
-                    <input type="text" name="address" class="full_width" placeholder="Address/Location" value="{{activity.address_location}}">  
+                    <input type="text" name="address" class="full_width" placeholder="Address/Location" value="{{activity.trip_activity.address_location}}">  
                 </div>
                 <div class="field_name full_width">
                     <label for="description">Description of Activity</label>      
-                    <textarea class="full_width" name="description" class="textarea" cols="30" rows="4" placeholder="Short Description">{{activity.activity_description}}</textarea>
+                    <textarea class="full_width" name="description" class="textarea" cols="30" rows="4" placeholder="Short Description">{{activity.trip_activity.activity_description}}</textarea>
                 </div>
 
                 <input class="full_width" type="submit" name="edit_activity" value="Edit Activity" id="register">

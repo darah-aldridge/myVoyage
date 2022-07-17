@@ -6,7 +6,9 @@ from flask import flash, session
 from flask_app import app
 from flask_app.models.trip import Trip
 from flask_app.models.activity import Activity
+from flask_app.models.journal import Journal
 
+import pprint
 
 from flask_bcrypt import Bcrypt
 
@@ -31,7 +33,12 @@ class User:
         self.user_past_trips = []
         self.user_future_trips = []
         self.future_trip_activities = []
-
+        self.trip_inspo = []
+        self.trip_activities = []
+        self.user_trip = []
+        self.user_trips = []
+        self.trips_activities = []
+        self.journal_entries = []
     @staticmethod
     def validate_registration(form_data):
         is_valid = True
@@ -163,7 +170,7 @@ class User:
 
     @classmethod
     def get_one_user_with_future_trips(cls, id):
-        query = f"SELECT * FROM users LEFT JOIN trips ON users.id = trips.user_id JOIN activities ON activities.trip_id = trips.id WHERE trips.end_date <= now() and users.id = {id} ORDER BY start_date, activity_start;"
+        query = f"SELECT * FROM users LEFT JOIN trips ON users.id = trips.user_id LEFT JOIN activities ON activities.trip_id = trips.id WHERE trips.end_date >= now() and users.id = {id} ORDER BY start_date, activity_start;"
         results = connectToMySQL(db).query_db(query)
         if not results:
             return None
@@ -195,4 +202,110 @@ class User:
                 future_trips.user_future_trips.append(Trip(trip))
                 future_trips.future_trip_activities.append(Activity(activity))
         return future_trips
-        
+
+    @classmethod
+    def get_all_trips_with_users(cls):
+        query = f"SELECT * FROM users JOIN trips ON users.id = trips.user_id ORDER BY trips.start_date;"
+        results = connectToMySQL(db).query_db(query)
+        users = []
+        for row in results:
+            if len(users) == 0:
+                users.append(cls(row))
+            else:
+                trip_inspo = users[len(users)-1]
+                if trip_inspo.id != row['id']:
+                    users.append(cls(row))
+            trip_inspo = users[len(users)-1]
+            trips = {
+                "id": row['trips.id'],
+                "trip_name": row['trip_name'],
+                "description": row['description'],  
+                "start_date": row['start_date'],  
+                "end_date": row['end_date'],  
+                "destinations": row['destinations'],  
+                "created_at": row['created_at'],
+                "updated_at": row['updated_at'],
+                "user_id": row['user_id'],
+            }
+            trip_inspo.trip_inspo.append(Trip(trips))
+        return users
+
+
+    @classmethod
+    def get_user_with_trip_activities(cls, id):
+        query = f"SELECT * FROM users LEFT JOIN trips ON users.id = trips.user_id LEFT JOIN activities ON activities.trip_id = trips.id LEFT JOIN journal_entries ON journal_entries.activity_id = activities.id WHERE trips.id = {id} ORDER BY start_date, activity_start;"
+        results = connectToMySQL(db).query_db(query)
+        if not results:
+            return None
+        else:
+            trip = cls(results[0])
+            for row in results:
+                trip_data = {
+                    "id": row['trips.id'],
+                    "trip_name": row['trip_name'],
+                    "description": row['description'],  
+                    "start_date": row['start_date'],  
+                    "end_date": row['end_date'],  
+                    "destinations": row['destinations'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['user_id'],
+                }
+                activity = {
+                    "id": row['activities.id'],
+                    "name": row['name'],
+                    "type": row['type'],  
+                    "activity_start": row['activity_start'],  
+                    "address_location": row['address_location'],  
+                    "activity_description": row['activity_description'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['trip_id'],
+                }
+                entry = {
+                    "id": row['journal_entries.id'],
+                    "entry": row['entry'],
+                    "picture": row['picture'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "activity_id": row['activity_id'],
+                }
+                trip.user_trip.append(Trip(trip_data))
+                trip.trip_activities.append(Activity(activity))
+                trip.journal_entries.append(Journal(entry))
+        return trip
+
+    @classmethod
+    def get_user_with_trips_activities(cls, id):
+        query = f"SELECT * FROM users LEFT JOIN trips ON users.id = trips.user_id LEFT JOIN activities ON activities.trip_id = trips.id WHERE users.id = {id} ORDER BY start_date, activity_start;"
+        results = connectToMySQL(db).query_db(query)
+        if not results:
+            return None
+        else:
+            trip = cls(results[0])
+            for row in results:
+                trip_data = {
+                    "id": row['trips.id'],
+                    "trip_name": row['trip_name'],
+                    "description": row['description'],  
+                    "start_date": row['start_date'],  
+                    "end_date": row['end_date'],  
+                    "destinations": row['destinations'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['user_id'],
+                }
+                activity = {
+                    "id": row['activities.id'],
+                    "name": row['name'],
+                    "type": row['type'],  
+                    "activity_start": row['activity_start'],  
+                    "address_location": row['address_location'],  
+                    "activity_description": row['activity_description'],  
+                    "created_at": row['created_at'],
+                    "updated_at": row['updated_at'],
+                    "user_id": row['trip_id'],
+                }
+                trip.user_trips.append(Trip(trip_data))
+                trip.trips_activities.append(Activity(activity))
+        return trip

@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='past_trips_style.css') }}">
 
-    <title>Plan a Trip</title>
+    <title>Plan Your Trip: {{trip.trip_name}}</title>
 </head>
 <body>
     <div class="nav_menu">
@@ -30,7 +30,7 @@
                                 <h2 class="past">{{trip.trip_name}}</h3>
                                 <a href="/edit-your-trip/{{trip.id}}" class="blue_button past">Edit Trip Information</a>
                             </div>
-                            <h3 class="past">{{trip.start_date_mmddyyyy}} - {{trip.end_date_mmddyyyy}}</h3>
+                            <h3 class="past">{{trip.start_date.strftime("%m/%d/%Y")}} - {{trip.end_date.strftime("%m/%d/%Y")}}</h3>
                             <p class="destination_names past">{{trip.destinations}}</p>
                             <p class="past">{{trip.description}}</p>
                             <div id ="green_line"></div>
@@ -78,28 +78,27 @@
                     </div>
                     <div id="trip_timeline">
                         <h2>Itinerary</h2>
-                        {% if not trip.activity_list %}
-                        <h4">No activities planned yet!</h4>
-                        {%else%}
                         <div id="timeline">
-                        {% for one_activity in trip.activity_list %}
-
+                            {% for activity in trip.one_trip_activity_list %}
+                                {% if activity.name == None %}
+                                    <p style="margin-bottom: 2em;">No activities planned yet!</p>
+                            {%else%}
                             <div class="timeline_item">
                                 <div class="timeline_date">
-                                    <p>{{one_activity.start_date_mmdd}}</p>
-                                    <p class="time">{{one_activity.activity_start_date}}</p>
+                                    <p class="timeline_p">{{activity.activity_start.strftime("%m/%d")}}</p>
+                                    <p class="time timeline_p">{{activity.activity_start.strftime("%I:%M%p")}}</p>
                                 </div>
                                 <div class="timeline_dot"></div>
                                 <div class="timeline_info">
-                                    <h4 class="activity_name">{{one_activity.name}} | <a class="edit" href="/edit-activity/{{one_activity.id}}">Edit</a></h4>
-                                    <p>{{one_activity.address_location}}</p>
-                                    <p class="activity_description">{{one_activity.activity_description}}</p>
+                                    <h4 class="activity_name">{{activity.name}} | <a class="edit" href="/edit-activity/{{activity.id}}">Edit</a></h4>
+                                    <p class="timeline_p">{{activity.address_location}}</p>
+                                    <p class="activity_description timeline_p">{{activity.activity_description}}</p>
                                 </div>
                             </div>
+                            {%endif%}
                             {%endfor%}
-                        {%endif%}
+                            <a class="green_button" href="/journal/{{trip.id}}">Journal this Trip</a>
                         </div>
-                        <a class="green_button" href="#">View Full Trip</a>
                     </div>
                 </div>
 

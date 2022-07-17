@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='view_trip_style.css') }}">
 
-    <title>Dashboard</title>
+    <title>View {{trip.trip_name}}</title>
 </head>
 <body>
     <div class="nav_menu">
@@ -25,65 +25,50 @@
             <div class="box">
                 <div id="trip_info">
                     <div id="trip_name">
-                        <h2>{{trip.trip_name}}</h2>
-                        <h3 class="dates">{{trip.start_date_mmddyyyy}} - {{trip.end_date_mmddyyyy}}</h3>
+                        <h2>{{trip.user_trip[0].trip_name}}</h2>
+                        <h3 class="dates">{{trip.user_trip[0].start_date.strftime("%m/%d/%Y")}} - {{trip.user_trip[0].end_date.strftime("%m/%d/%Y")}}</h3>
                     </div>
-                    <p class="destination_names">{{trip.destinations}}</p>
-                    <p>{{trip.description}}</p>
+                    <p class="destination_names">{{trip.user_trip[0].destinations}}</p>
+                    <p>{{trip.user_trip[0].description}}</p>
                 </div>
                 
             </div>
             <div class="box" id="profile_info">
-                <h1>{{trip.user_id}}</h1>
-                {% if session.user_id == trip.user_id %}
                     <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
-                    <h2 class="profile">First Last</h2>
-                    <p class="profile">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                {% else %}
-                <h2>Journal Your Trip</h2>
-                <form id="journal_form" action='/register' method='post'>
-                    {% with messages = get_flashed_messages(category_filter=["register error"]) %}
-                        {% if messages %}
-                            {% for message in messages %}
-                                <p class="validation">{{message}}</p>
-                            {% endfor %}
-                        {% endif %}
-                    {% endwith %}
-                        <select class="full_width" id="activity_type" name="activity">
-                            <option value="" >Choose activity...</option>
-                            {% for activity in trip.activity_list %}
-                            <option value="{{activity.id}}">{{activity.name}}</option>
-                            {% endfor %}
-                        </select>        
-                        <textarea class="full_width" name="short_description" class="textarea" cols="30" rows="4" placeholder="Short Description"></textarea>
-                        <input type="file" name="activity_picture" class="full_width" placeholder="Upload Picture from Activity">        
-                    <input class="full_width" type="submit" name="add_journal" value="Add to Your Journal" id="register">
-                </form>
-                {% endif %}
+                    <h2 class="profile">{{trip.first_name}} {{trip.last_name}}</h2>
+                    <p class="profile">{{trip.bio}}</p>
+
             </div>
 
         </div>
     </div>
     <div id="trip_timeline">
         <h2>Itinerary</h2>
+        {% for one_activity in trip.trip_activities %}
+        {% if one_activity.id == None %}
+        <p>No activities to see here!</p>
+        {%else%}
         <div id="large_timeline">
-            {% for one_activity in trip.activity_list %}
             <div class="large_timeline_item">
                 <div class="timeline_date">
-                    <p>{{one_activity.start_date_mmdd}}</p>
-                    <p class="time">{{one_activity.activity_start_time}}</p>
+                    <p class="timeline_p">{{one_activity.activity_start.strftime("%m/%d")}}</p>
+                    <p class="time timeline_p">{{one_activity.activity_start.strftime("%I:%M%p")}}</p>
                 </div>
                 <div class="timeline_dot"></div>
                 <div class="timeline_info">
-                    <h4 class="activity_name">{{one_activity.name}}  
-                    {% if session.user_id != trip.user_id %}
-                    | <a class="edit" href="/edit-activity/{{one_activity.id}}">Edit</a>
-                    {%endif%}
-                    </h4>
-                    <p>{{one_activity.address_location}}</p>
-                    <p>{{one_activity.activity_description}}</p>
+                    <h3 class="activity_name">{{one_activity.name}}  | <a class="edit" href="/edit-activity/{{one_activity.id}}">Edit Activity</a></h3>
+                    <p class="timeline_p">{{one_activity.address_location}}</p>
+                    <p class="timeline_p">{{one_activity.activity_description}}</p>
+                    {% for entry in trip.journal_entries %}
+                    {% if entry.activity_id == one_activity.id %}
+                    <h4 style="margin-top: .5em; font-style: italic;">Journal Entry   | <a class="edit" href="/edit-journal/{{entry.id}}">Edit Entry</a></h4>
+                    <p class="timeline_p">{{entry.entry}}</p>
+
+                    {% endif %} 
+                    {%endfor%}
                 </div>
             </div>
+            {% endif %} 
             {%endfor%}
         </div>
     </div>

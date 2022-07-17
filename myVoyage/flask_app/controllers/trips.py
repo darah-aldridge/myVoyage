@@ -35,10 +35,10 @@ def submitTrip():
 def planTrip(id):
     if session.get("user_id") == None:
         return redirect('/')
+
     trip = Trip.get_one_trip_with_activities(id)
-    if trip == None:
-        trip = Trip.get_one_trip(id)
     return render_template("trip_planner.html", trip=trip)
+
 
 @app.route('/edit-your-trip/<int:id>')
 def editYourTrip(id):
@@ -74,13 +74,12 @@ def pastTrips():
 def tripInspiration():
     if session.get("user_id") == None:
         return redirect('/')
-    return render_template("trip_inspiration.html") 
+    trips = User.get_all_trips_with_users()
+    return render_template("trip_inspiration.html", trips=trips) 
 
 @app.route('/view/<int:id>')
 def viewTrip(id):
-    # if session.get("user_id") == None:
-    #     trip = Trip.get_one_trip_with_user(id)
-    #     return render_template("view_trip.html", trip = trip) 
-    trip = Trip.get_one_trip_with_activities(id)
+    trip = User.get_user_with_trip_activities(id)
     return render_template("view_trip.html", trip = trip) 
+
 

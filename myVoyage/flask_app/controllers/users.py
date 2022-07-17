@@ -60,7 +60,8 @@ def dashboard():
         return redirect('/')
     user = User.get_one_user_with_past_trips(session['user_id'])
     upcoming = User.get_one_user_with_future_trips(session['user_id'])
-    return render_template("dashboard.html" , user = user, upcoming=upcoming)
+    user_info = User.get_one(session['user_id'])
+    return render_template("dashboard.html" , user = user, upcoming=upcoming, user_info=user_info)
 
 @app.route('/account')
 def account():

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='past_trips_style.css') }}">
+
+    <title>Edit Entry</title>
+</head>
+<body>
+    <div class="nav_menu">
+        <h2 id="myVoyage">my<span style="color:#AEBF2A;">Voyage</span></h2>
+        <div class="nav_links">
+            <a class="navlink" href="/dashboard">Dashboard</a>
+            <a class="navlink" href="/plan-a-trip">Plan a Trip</a>
+            <a class="navlink" href="/trip-inspiration">Trip Inspiration</a>
+            <a class="navlink" href="/log-out">Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="box" id="single_form_container">
+            <h2>Edit {{trip.journal_activity[0].name}}</h2>
+            <form class="form" action='/submit_edit_journal/{{trip.journal_entry[0].id}}' method='post'>
+                {% with messages = get_flashed_messages(category_filter=["entry error"]) %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <p class="validation">{{message}}</p>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}       
+                    <textarea class="full_width" name="entry" class="textarea" cols="30" rows="4" placeholder="Short Description">{{trip.journal_entry[0].entry}}</textarea>
+                    <input type="file" name="picture" class="full_width" placeholder="Upload Picture from Activity">    
+                    <input type="hidden" name="trip_id" value="{{trip.id}}">    
+                    <input type="hidden" name="activity_id" value="{{trip.journal_activity[0].id}}">    
+
+                <input class="full_width" type="submit" name="edit_entry" value="Edit this Entry" id="register">
+            </form>
+        </div>
+    </div>
+</body>
+</html>

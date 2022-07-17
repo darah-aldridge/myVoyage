@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='trip_inspiration_styles.css') }}">
 
-    <title>Past Trips</title>
+    <title>Trip Inspiration</title>
 </head>
 <body>
     <div class="nav_menu">
@@ -22,21 +22,32 @@
     </div>
     <div class="container" id>
         <h1>Trip Inspiration</h1>
-        <div id="trip_inspiration_box">
-            <div class="past_trip_info">
-                <div id="trip_name">
-                    <h2 class="past">Trip Name</h3>
-                    <h3 class="stars past">* * * * *</h3>
+        <div id="trip_inspiration_container">
+            {% for user_trip in trips %}
+                {% for trip in user_trip.trip_inspo %}
+                <div id="trip_inspiration_box">
+                    <div class="past_trip_info">
+                        <div id="trip_name">
+                            <h2 class="past">{{trip.trip_name}}</h3>
+                            <h3 class="stars past">* * * * *</h3>
+                        </div>
+                        <h3 class="past">{{trip.start_date.strftime("%m/%d/%Y")}} - {{trip.end_date.strftime("%m/%d/%Y")}}</h3>
+                        <p class="destination_names past">{{trip.destinations}}</p>
+                        <p class="past">{{trip.description}}</p>
+                        <div class="user_info">
+                            <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
+                            <h3 class="profile">{{user_trip.first_name}} created this trip.</h3>
+                        </div>
+                        {% if session.user_id == user_trip.id %}
+                        <a href="/journal/{{trip.id}}" class="green_button">View Journal</a>
+                        {%else%}
+                        <a href="/view/{{trip.id}}" class="blue_button">View Trip</a>
+
+                        {%endif%}
+                    </div>
                 </div>
-                <h3 class="past">MM/DD/YY - MM/DD/YY</h3>
-                <p class="destination_names past">DESTINATION | DESTINATION | DESTINATION</p>
-                <p class="past">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-                <div class="user_info">
-                    <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
-                    <h3 class="profile">First L. created this trip.</h3>
-                </div>
-                <a href="#" class="blue_button">View Trip</a>
-            </div>
+                {%endfor%}
+            {%endfor%}
         </div>
     </div>
 </body>

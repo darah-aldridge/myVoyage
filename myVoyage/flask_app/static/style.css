@@ -55,6 +55,9 @@ input[type=text], input[type=submit], input[type=password], text, .textarea::pla
 input[type=submit]{
     font-weight: bold;
 }
+p, label{
+    margin-top: 1em;
+}
 
 #delete{
     font-weight: bold;

@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='dashboard_style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='past_trips_style.css') }}">
 
-    <title>Edit Your Trip</title>
+    <title>Edit Your Trip: {{trip.trip_name}}</title>
 </head>
 <body>
     <div class="nav_menu">
@@ -37,11 +37,11 @@
                     </div>
                     <div class="field_name">
                         <label for="start_date">Start Date</label>
-                        <input type="date" name="start_date" placeholder="Start Date" value="{{trip.start_date}}">
+                        <input type="date" name="start_date" placeholder="Start Date" value="{{trip.start_date.strftime("%Y-%m-%d")}}">
                     </div>
                     <div class="field_name">
                         <label for="end_date">End Date</label>
-                        <input type="date" name="end_date" placeholder="End Date" value="{{trip.end_date}}">
+                        <input type="date" name="end_date" placeholder="End Date" value="{{trip.end_date.strftime("%Y-%m-%d")}}">
                     </div>
                     <div class="field_name full_width">
                         <label for="destinations">Destinations (separate each destination by a comma) </label>
