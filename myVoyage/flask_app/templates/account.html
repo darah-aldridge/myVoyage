@@ -23,14 +23,14 @@
             <h1 class="account_info">Your Account</h1>
             <div id="profile_view">
                 <div id="profile_info">
-                    <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" id="profile_pic" class="account_info">
+                    <img src="{{url_for('static', filename='/images/profile_pictures/')}}{{user.profile_picture}}" alt="" id="profile_pic" class="account_info">
                     <h2 class="account_info">{{user.first_name}} {{user.last_name}}</h2>
                     <h3 class="account_info">{{user.email}}</h3>
                     <p class="account_info">{{user.bio}}</p>
                 </div>
                 <div class="form_container">
                     <h2>Edit Acccount</h2>
-                    <form class="form" action='/edit_user/{{session.user_id}}' method='post'>
+                    <form class="form" action='/edit_user/{{session.user_id}}' method='post' enctype="multipart/form-data">
                         {% with messages = get_flashed_messages(category_filter=["update error"]) %}
                             {% if messages %}
                                 {% for message in messages %}

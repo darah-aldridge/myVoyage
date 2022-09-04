@@ -1,13 +1,18 @@
-from flask import render_template, request, redirect, session
+from flask import render_template, request, redirect, session, abort
 from flask_app.config.mysqlconnection import connectToMySQL
 from flask_app.models.user import User
 from flask_app import app
 from flask_bcrypt import Bcrypt
 from flask import flash
 from datetime import datetime
+from werkzeug.utils import secure_filename
+import os
 
+UPLOAD_PATH = 'flask_app/static/images/profile_pictures'
 bcrypt = Bcrypt(app)
-
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_PATH'] = UPLOAD_PATH
 
 @app.route('/')
 def index():
@@ -17,19 +22,26 @@ def index():
 def register():
     if not User.validate_registration(request.form):
         return redirect('/')
+
     pw_hash = bcrypt.generate_password_hash(request.form['password'])
+    profile_picture = request.files['profile_picture']
+    filename = secure_filename(profile_picture.filename)
+
+    if filename != '':
+        file_ext = os.path.splitext(filename)[1]
+        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            abort(400)
+        profile_picture.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     data = {
         "first_name": request.form['first_name'],
         "last_name": request.form['last_name'],
         "bio": request.form['bio'],
-        "profile_picture": request.form['profile_picture'],
         "email": request.form['email'],
+        "profile_picture": filename,
         "password": pw_hash
         }
     user_id = User.save(data)
     session['user_id'] = user_id
-    session['first_name'] = data['first_name']
-    session['last_name'] = data['last_name']
     return redirect('/dashboard')
 
 @app.route('/login', methods=['POST'])
@@ -75,12 +87,21 @@ def account():
 def edit_user(id):
     if not User.validate_update(request.form):
         return redirect(f'/account/{id}')
+    
+    profile_picture = request.files['profile_picture']
+    filename = secure_filename(profile_picture.filename)
+
+    if filename != '':
+        file_ext = os.path.splitext(filename)[1]
+        if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+            abort(400)
+        profile_picture.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     data = {
         "first_name": request.form['first_name'],
         "last_name": request.form['last_name'],
         "email": request.form['email'],
         "bio": request.form['bio'],
-        "profile_picture": request.form['profile_picture'],
+        "profile_picture": filename,
         "id": id
         }
     User.edit(data, id)
@@ -93,3 +114,9 @@ def userPastTrips():
         return redirect('/')
     user = User.get_one_user_with_past_trips(session['user_id'])
     return render_template("past_trips.html" , user = user)
+
+
+@app.route('/delete/<int:id>')
+def delete(id):
+    User.delete(id)
+    return redirect(f'/')

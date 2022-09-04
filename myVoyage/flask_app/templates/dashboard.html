@@ -67,7 +67,7 @@
             </div>
 
             <div class="box" id="profile_info">
-                <img src="{{url_for('static', filename='/images/placeholder.jpg')}}" alt="" class="profile" id="profile_pic">
+                <img src="{{url_for('static', filename='/images/profile_pictures/')}}{{user_info.profile_picture}}" alt="" class="profile" id="profile_pic">
                 <h2>{{user_info.first_name}} {{user_info.last_name}}</h2>
                 <p class="profile">{{user_info.bio}}</p>
                 <a class="green_button view_button" href="/account">Edit Account</a>

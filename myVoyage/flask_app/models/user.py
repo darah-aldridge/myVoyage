@@ -141,7 +141,7 @@ class User:
 
     @classmethod
     def edit(cls, data, id):
-        query  = f"UPDATE users SET first_name =%(first_name)s, last_name = %(last_name)s, email = %(email)s, bio =%(bio)s  WHERE id = {id};"
+        query  = f"UPDATE users SET first_name =%(first_name)s, last_name = %(last_name)s, email = %(email)s, bio =%(bio)s, profile_picture =%(profile_picture)s  WHERE id = {id};"
         return connectToMySQL(db).query_db(query, data)
 
 
@@ -309,3 +309,9 @@ class User:
                 trip.user_trips.append(Trip(trip_data))
                 trip.trips_activities.append(Activity(activity))
         return trip
+
+
+    @classmethod
+    def delete(cls, id):
+        query = f"DELETE FROM users WHERE id = {id};"
+        return connectToMySQL(db).query_db(query)

@@ -1,5 +1,7 @@
 #profile_pic{
     width: 12em;
+    height: 12em;
+    object-fit: cover;
     border-radius: 50%;
 }
 
